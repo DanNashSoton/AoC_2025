@@ -2,7 +2,7 @@
 using BenchmarkTools
 using Printf
 
-max_day = 4
+max_day = 5
 files = ["Day$x.jl" for x in 1:max_day]
 include.(files)
 
