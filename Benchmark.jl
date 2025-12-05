@@ -21,3 +21,17 @@ function run_benchmark(max_day)
 end
 
 run_benchmark(max_day)
+
+#= General Testing Functionality
+
+@btime day4()
+
+using Profile
+
+Profile.clear()
+@profile for i in 1:100
+    day4()
+end
+Profile.print()
+
+=#

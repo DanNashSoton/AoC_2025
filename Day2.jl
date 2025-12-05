@@ -1,37 +1,48 @@
 function day2()
     data = [parse.(Int,x) for x in split.(split(read("Data/day2.txt",String),","),"-")]
-    list = vcat([range(x[1],x[2]) for x in data]...)
-    p1 = check1.(list)
-    fac_table = [findall([n % x == 0 for x in 1:floor(n/2)]) for 
-        n in 1:ndigits(maximum(list))]
-    to_check = fac_table[ndigits.(list)]
-    p2 = fast_check_splits.(list,to_check)
-    part1 = sum(list[p1])
-    part2 = sum(list[p2])
-    return part1, part2
-end
-
-function check1(val)
-    isodd(ndigits(val)) && return false
-    line = string(val)
-    k = Int(length(line)/2)
-    return line[1:k] == line[k+1:end]
-end
-
-function fast_check_splits(val,n)
-    isempty(n) && return false
-    line = string(val)
-    for m in n
-        check_split(line,m) && return true
+    ranges = [range(x[1],x[2]) for x in data]
+    split_ranges!(ranges)
+    filter!(x -> ndigits(x[1]) .> 1,ranges)
+    part1 = 0
+    for r in ranges
+        isodd(ndigits(r[1])) && continue
+        part1 += test_range(r,Int(ndigits(r[1])/2))
     end
-    false
+    max_l = maximum(ndigits.(last.(ranges)))
+    fac_table = [findall([n % x == 0 for x in 1:floor((n)/2)]) for n in 1:max_l]
+    part2 = 0
+    for r in ranges
+        vals = unique(vcat(find_vals.([r],fac_table[ndigits(r[1])])...))
+        part2 += sum(vals[in.(vals,[r])])
+    end
+    return part1,part2
 end
 
-@views function check_split(line,m)
-    k = Int(length(line)/m)
-    a = line[1:m]
-    for p in 2:k
-        a != string(line)[(p-1)*m+1:p*m] && return false
+function split_ranges!(ranges)
+    for (i,r) in enumerate(ranges)
+        ndigits(first(r)) == ndigits(last(r)) && continue
+        ranges[i] = first(r):(10^ndigits(first(r))-1)
+        push!(ranges,(10^ndigits(first(r))):last(r))
     end
-    return true
+end
+
+function fill_num(v,n,k)
+    return v + sum([v*(10^n)^x for x in 1:k-1])
+end
+
+function test_range(r,n)
+    l = ndigits(r[1])
+    k = Int(l/n)
+    v1 = floor(Int,r[1]/10^(l-n))
+    vn = floor(Int,r[end]/10^(l-n))
+    vals = [fill_num(v,n,k) for v in v1:vn]
+    return sum(vals[in.(vals,[r])])
+end
+
+function find_vals(r,n)
+    l = ndigits(r[1])
+    k = Int(l/n)
+    v1 = floor(Int,r[1]/10^(l-n))
+    vn = floor(Int,r[end]/10^(l-n))
+    return [fill_num(v,n,k) for v in v1:vn]
 end
