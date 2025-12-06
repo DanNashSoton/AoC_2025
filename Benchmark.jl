@@ -2,7 +2,7 @@
 using BenchmarkTools
 using Printf
 
-max_day = 5
+max_day = 6
 files = ["Day$x.jl" for x in 1:max_day]
 include.(files)
 
@@ -24,13 +24,13 @@ run_benchmark(max_day)
 
 #= General Testing Functionality
 
-@btime day4()
+@btime day6()
 
 using Profile
 
 Profile.clear()
 @profile for i in 1:100
-    day4()
+    day6()
 end
 Profile.print()
 
