@@ -2,7 +2,7 @@
 using BenchmarkTools
 using Printf
 
-max_day = 6
+max_day = 8
 files = ["Day$x.jl" for x in 1:max_day]
 include.(files)
 
@@ -24,13 +24,14 @@ run_benchmark(max_day)
 
 #= General Testing Functionality
 
-@btime day6()
+@btime day8()
+@code_warntype day8()
 
 using Profile
 
 Profile.clear()
-@profile for i in 1:100
-    day6()
+@profile for i in 1:1000
+    day7()
 end
 Profile.print()
 
