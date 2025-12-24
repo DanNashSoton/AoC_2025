@@ -2,7 +2,7 @@
 using BenchmarkTools
 using Printf
 
-max_day = 8
+max_day = 12
 files = ["Day$x.jl" for x in 1:max_day]
 include.(files)
 
@@ -21,6 +21,8 @@ function run_benchmark(max_day)
 end
 
 run_benchmark(max_day)
+
+### Total (on my laptop): 403.4 ms
 
 #= General Testing Functionality
 
